@@ -1,0 +1,56 @@
+package ntukhpi.semit.militaryoblikspring.service;
+
+import ntukhpi.semit.militaryoblikspring.entity.VSklad;
+import ntukhpi.semit.militaryoblikspring.repository.VSkladRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class VSkladServiceImpl implements VSkladService {
+
+    private final VSkladRepository vSkladRepository;
+
+    @Autowired
+    public VSkladServiceImpl(VSkladRepository vSkladRepository) {
+        this.vSkladRepository = vSkladRepository;
+    }
+
+    @Override
+    public VSklad createVSklad(VSklad vSklad) {
+        return vSkladRepository.save(vSklad);
+    }
+
+    @Override
+    public VSklad getVSkladById(Long id) {
+        return vSkladRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public VSklad getVSkladByName(String vskladName) {
+        return vSkladRepository.findVSkladBySkladName(vskladName);
+    }
+
+    @Override
+    public List<VSklad> getAllVSklad() {
+        return vSkladRepository.findAll();
+    }
+
+    @Override
+    public VSklad updateVSklad(Long id, VSklad updatedVSklad) {
+        VSklad existingVSklad = vSkladRepository.findById(id).orElse(null);
+        if (existingVSklad != null) {
+            updatedVSklad.setId(existingVSklad.getId());
+            return vSkladRepository.save(updatedVSklad);
+        }
+        return null;
+    }
+
+    //ToDo change when special conditions was presented
+    @Override
+    public void deleteVSklad(Long id) {
+        vSkladRepository.deleteById(id);
+    }
+
+}
