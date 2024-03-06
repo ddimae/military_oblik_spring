@@ -7,6 +7,7 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
+    <script src="/js/index.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -19,6 +20,34 @@
     </button>
 </nav>
 
+    <label for="kafedra_select"> </label>
+    <select name="kafedra_select" id="kafedra_select">
+        <option th:each="kafedra : ${kafedra_list}"
+                th:value="${kafedra}" th:text="${kafedra}">
+        </option>
+    </select>
+    <br>
+    <label for="fakultet_select"> </label>
+    <select name="fakultet_select" id="fakultet_select">
+        <option th:each="fakultet : ${fakultet_list}"
+                th:value="${fakultet}" th:text="${fakultet}">
+        </option>
+    </select>
+    <br>
+    <label for="voenkomat_select"> </label>
+    <select name="voenkomat_select" id="voenkomat_select">
+        <option th:each="voenkomat : ${voenkomat_list}"
+                th:value="${voenkomat}" th:text="${voenkomat}">
+        </option>
+    </select>
+    <br>
+    <label for="category_select"> </label>
+    <select name="category_select" id="category_select">
+        <option value="-Оберіть категорію звань">-Оберіть категорію звань</option>
+        <option value="Офіцерський склад">Офіцерський склад</option>
+        <option value="Рядовий та сержантський склад">Рядовий та сержантський склад</option>
+    </select>
+    <br>
 <div class="container">
     <div class="row">
         <h1> Перелік військовозобов'язаних НТУ "ХПІ" </h1>
@@ -37,8 +66,8 @@
             </form>
         </div>
         <div class="col-lg-6">
-            <form method="POST" action="/reservists/send_email">
-                Send email to: <input type="email" name="email">
+            <form method="POST" th:action="@{/reservists/send_email}">
+                Send email to: <input type="email" name="email" id="email" th:value="${email != null ? email : ''}">
                 <button type="submit" class="btn btn-primary btn-sm mb-3">
                     Надіслати перелік поштою
                 </button>
@@ -61,32 +90,23 @@
         </thead>
 
         <tbody>
-        <tr th:each="mp : ${military_persons_list}">
-            <td th:text="${mp.pib}"></td>
-            <td th:text="${mp.dr}"></td>
-            <td th:text="${mp.gender}"></td>
-            <td th:text="${mp.rank}"></td>
-            <td th:text="${mp.vos}"></td>
-            <td th:text="${mp.tck}"></td>
-            <td th:text="${mp.VPrydatnist}"></td>
+        <tr th:each="reservist : ${reservists_list}">
+            <td th:text="${reservist.pib}"></td>
+            <td th:text="${reservist.dr}"></td>
+            <td th:text="${reservist.gender}"></td>
+            <td th:text="${reservist.rank}"></td>
+            <td th:text="${reservist.vos}"></td>
+            <td th:text="${reservist.tck}"></td>
+            <td th:text="${reservist.VPrydatnist}"></td>
 
             <td>
-                <a th:href="@{/reservist/contacts/{id}(id=${mp.id})}"
-                   class="btn btn-danger" >Контакти</a>
-                <a th:href="@{/reservist/v_oblik/{id}(id=${mp.id})}"
-                   class="btn btn-primary">Військ.облік</a>
-                <a th:href="@{/reservist/osvita/{id}(id=${mp.id})}"
-                   class="btn btn-success">Освіта</a>
+                <a th:href="@{/reservist/contacts/{id}(id=${reservist.getMilitaryPersonId()})}" class="btn btn-danger" >Контакти</a>
+                <a th:href="@{/reservist/military-registration/{id}(id=${reservist.getMilitaryPersonId()})}" class="btn btn-primary">Військ.облік</a>
+                <a th:href="@{/reservist/education/{id}(id=${reservist.getMilitaryPersonId()})}" class="btn btn-success">Освіта</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
 </body>
-<script>
-    // For confirm deleting
-    function confirmation() {
-        return confirm('Are you sure you want to do this?');
-    }
-</script>
 </html>

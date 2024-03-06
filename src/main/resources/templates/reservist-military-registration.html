@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${reservist != null ? ('MilitaryOblik - Дані військового обліку ' + reservist.getPib()) : 'MilitaryOblik - Дані військового обліку'}"></title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <script src="/js/index.js"></script>
+</head>
+<body>
+    <h2 th:text="${reservist != null ? reservist.getPib() : ''}" ></h2>
+    <div th:text="${errorString != null ? errorString : ''}"></div>
+    <form th:action="@{'/reservist/military-registration/' + ${reservist.getMilitaryPersonId()} + '/save'}" method="POST">
+        <div>
+            <label for="vos_input">ВОС:</label>
+            <input type="text" name="vos_input" id="vos_input" th:value="${reservist != null ? reservist.vos : ''}" required/>
+            <!-- pattern="[0-9]+" oninvalid="this.setCustomValidity('У полі дозволено тільки тільки цифри!')" onchange="this.setCustomValidity(' ')"  -->
+        </div>
+        <div>
+            <label for="prydatnist_select">Придатність:</label>
+            <select name="prydatnist_select" id="prydatnist_select" th:value="${reservist != null ? reservist.vPrydatnist : '-Оберіть придатність'}" required>
+                <option value="Придатний" th:selected="${reservist.getVPrydatnist().equals('Придатний')}">Придатний</option>
+                <option value="Непридатний" th:selected="${reservist.getVPrydatnist().equals('Непридатний')}">Непридатний</option>
+            </select>
+        </div>
+        <div>
+            <label for="tck_input">ТЦК:</label>
+            <input type="text" name="tck_input" id="tck_input" th:value="${reservist != null ? reservist.tck : ''}" required/>
+            <!-- pattern="[А-ЩЬЮЯҐЄІЇа-щьюяґєії,.\\-`'_\\s]*" oninvalid="this.setCustomValidity('У полі дозволені лише букви!')" onchange="this.setCustomValidity(' ')"  -->
+
+            <label for="tck_select"></label>
+            <select name="tck_select" id="tck_select" th:value="${reservist != null ? reservist.tck : '-Оберіть ТЦК'}">
+                <option th:each="voenkomat : ${voenkomatList}"
+                        th:value="${voenkomat.getVoenkomatName()}" th:text="${voenkomat.getVoenkomatName()}"
+                        th:selected="${reservist.getTck().equals(voenkomat.getVoenkomatName())}">
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="familyState_input">Сімейний стан:</label>
+            <input type="text" name="familyState_input" id="familyState_input" th:value="${reservist != null ? reservist.familyState : ''}" required/>
+            <!-- pattern="[А-ЩЬЮЯҐЄІЇа-щьюяґєії,.\\-`'_\\s]*" oninvalid="this.setCustomValidity('У полі дозволені лише букви!')" onchange="this.setCustomValidity(' ')"  -->
+
+            <label for="familyState_select"></label>
+            <select name="familyState_select" id="familyState_select" th:value="${reservist != null ? reservist.familyState : '-Оберіть сімейний стан'}">
+                <option value="одружений/заміжня">одружений/заміжня</option>
+                <option value="неодружений/незаміжня">неодружений/незаміжня</option>
+                <option value="розлучений/розлучена">розлучений/розлучена</option>
+                <option value="вдівець/вдова">вдівець/вдова</option>
+            </select>
+        </div>
+        <div>
+            <label for="educationLevel_input">Освіта:</label>
+            <input type="text" name="educationLevel_input" id="educationLevel_input" th:value="${reservist != null ? reservist.educationLevel : ''}" required/>
+            <!-- pattern="[А-ЩЬЮЯҐЄІЇа-щьюяґєії,.\\-`'_\\s]*" oninvalid="this.setCustomValidity('У полі дозволені лише букви!')" onchange="this.setCustomValidity(' ')"  -->
+
+            <label for="educationLevel_select"></label>
+            <select name="educationLevel_select" id="educationLevel_select" th:value="${reservist != null ? reservist.educationLevel : '-Оберіть рівень освіти'}">
+                <option value="базова загальна середня" th:selected="${reservist.getEducationLevel().equals('базова загальна середня')}">базова загальна середня</option>
+                <option value="повна загальна середня" th:selected="${reservist.getEducationLevel().equals('повна загальна середня')}">повна загальна середня</option>
+                <option value="професійно-технічна" th:selected="${reservist.getEducationLevel().equals('професійно-технічна')}">професійно-технічна</option>
+                <option value="неповна вища" th:selected="${reservist.getEducationLevel().equals('неповна вища')}">неповна вища</option>
+                <option value="базова вища" th:selected="${reservist.getEducationLevel().equals('базова вища')}">базова вища</option>
+                <option value="повна вища" th:selected="${reservist.getEducationLevel().equals('повна вища')}">повна вища</option>
+            </select>
+        </div>
+        <div>
+            <label for="sklad_select">Склад:</label>
+            <select name="sklad_select" id="sklad_select" th:value="${reservist != null ? reservist.getVSklad() : '-Оберіть склад'}" required>
+                <option th:each="vSklad : ${vSkladList}"
+                        th:value="${vSklad.getSkladName()}" th:text="${vSklad.getSkladName()}"
+                        th:selected="${reservist.getVSklad().equals(vSklad.getSkladName())}">
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="voenZvan_select">Військове звання:</label>
+            <select name="voenZvan_select" id="voenZvan_select" th:value="${reservist != null ? reservist.rank : '-Оберіть військове звання'}" required>
+                <option th:each="vZvanie : ${vZvanieList}"
+                        th:value="${vZvanie.getZvanieName()}" th:text="${vZvanie.getZvanieName()}"
+                        th:selected="${reservist.getRank().equals(vZvanie.getZvanieName())}">
+                </option>
+            </select>
+        </div>
+        <button type="submit">Зберегти</button> <!--  onclick="confirmation('Впевнені, що хочете зберегти дані?')" -->
+        <a th:href="@{/reservists}">Повернутися</a>
+    </form>
+</body>
+</html>
